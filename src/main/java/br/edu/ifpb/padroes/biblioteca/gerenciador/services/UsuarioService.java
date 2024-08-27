@@ -22,18 +22,18 @@ public class UsuarioService {
         return repository.save(novoUsuario);
     }
 
-    public Usuario deleteUser(Long id){
-        if(repository.existsById(id)){
-            return repository.delete(id);
-        } 
-        throw new EntityNotFoundException("Inexistente");
-    }
-
-    public Usuario putUser(Long id, UsuarioDTO usuarioDTO){
-        UsuarioDTO usuarioExistente = repository.findById(id).orElseThrow();
-        usuarioExistente.setNome(usuarioDTO.nome());
-        usuarioExistente.setEndereco(usuarioDTO.endereco());
-
-        return repository.save(usuarioExistente);
-    }
+//    public Usuario deleteUser(Long id){
+//        if(repository.existsById(id)){
+//            return repository.delete(id);
+//        }
+//        throw new EntityNotFoundException("Inexistente");
+//    }
+//
+//    public Usuario putUser(Long id, UsuarioDTO usuarioDTO){
+//        UsuarioDTO usuarioExistente = repository.findById(id).orElseThrow();
+//        usuarioExistente.setNome(usuarioDTO.nome());
+//        usuarioExistente.setEndereco(usuarioDTO.endereco());
+//
+//        return repository.save(usuarioExistente);
+//    }
 }
