@@ -19,4 +19,6 @@ public class UsuarioService {
         Usuario novoUsuario = new Usuario(usuarioDTO);
         return repository.save(novoUsuario);
     }
+
+
 }
