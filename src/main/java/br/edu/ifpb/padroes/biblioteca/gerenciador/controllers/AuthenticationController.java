@@ -2,6 +2,7 @@ package br.edu.ifpb.padroes.biblioteca.gerenciador.controllers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.config.security.TokenService;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.AuthenticationDTO;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoginResponseDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UsuarioDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.UsuarioRepository;

@@ -1,10 +1,12 @@
-package br.edu.ifpb.padroes.biblioteca.gerenciador.models.livros;
+package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "livro")
@@ -19,6 +21,22 @@ public class Livro implements Serializable {
     private int quantidade;
     @Column(name = "ano_edicao")
     private Date dataPublicacao;
+
+    @ManyToMany
+    @JoinTable(
+            name = "livro_autor",
+            joinColumns = @JoinColumn(name = "id_livro"),
+            inverseJoinColumns = @JoinColumn(name = "id_autor")
+    )
+    private Set<Autor> autores = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "livro_genero",
+            joinColumns = @JoinColumn(name = "id_livro"),
+            inverseJoinColumns = @JoinColumn(name = "id_genero")
+    )
+    private Set<Genero> generos = new HashSet<>();
 
     public Livro() {
     }
@@ -78,6 +96,22 @@ public class Livro implements Serializable {
 
     public void setSinopse(String sinopse) {
         this.sinopse = sinopse;
+    }
+
+    public Set<Autor> getAutores() {
+        return autores;
+    }
+
+    public void setAutores(Set<Autor> autores) {
+        this.autores = autores;
+    }
+
+    public Set<Genero> getGeneros() {
+        return generos;
+    }
+
+    public void setGeneros(Set<Genero> generos) {
+        this.generos = generos;
     }
 
     @Override
