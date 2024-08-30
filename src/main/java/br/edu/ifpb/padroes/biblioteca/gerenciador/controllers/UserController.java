@@ -18,8 +18,4 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(service.getUsuarioById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<Usuario> addUsuario(@RequestBody UsuarioDTO usuarioDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.addUsuario(usuarioDTO));
-    }
 }
