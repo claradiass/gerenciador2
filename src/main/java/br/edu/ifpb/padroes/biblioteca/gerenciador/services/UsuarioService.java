@@ -18,26 +18,11 @@ public class UsuarioService {
         return repository.findById(id).orElseThrow();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public Usuario addUsuario(UsuarioDTO usuarioDTO) {
         Usuario novoUsuario = new Usuario(usuarioDTO);
         return repository.save(novoUsuario);
     }
-
-//    public Usuario deleteUser(Long id){
-//        if(repository.existsById(id)){
-//            return repository.delete(id);
-//        }
-//        throw new EntityNotFoundException("Inexistente");
-//    }
-//
-//    public Usuario putUser(Long id, UsuarioDTO usuarioDTO){
-//        UsuarioDTO usuarioExistente = repository.findById(id).orElseThrow();
-//        usuarioExistente.setNome(usuarioDTO.nome());
-//        usuarioExistente.setEndereco(usuarioDTO.endereco());
-//
-//        return repository.save(usuarioExistente);
-//    }
 
 
 }

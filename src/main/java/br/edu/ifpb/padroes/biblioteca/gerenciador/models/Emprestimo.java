@@ -1,6 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
-import br.edu.ifpb.padroes.biblioteca.gerenciador.models.livros.Livro;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Livro;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
