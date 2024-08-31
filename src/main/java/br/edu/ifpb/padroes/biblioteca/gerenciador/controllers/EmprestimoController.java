@@ -14,28 +14,40 @@ public class EmprestimoController {
     @Autowired
     private EmprestimoService service;
 
+//    @PostMapping
+//    public ResponseEntity<Emprestimo> createEmprestimo(@RequestBody EmprestimoDTO emprestimoDTO){
+//        return ResponseEntity.status(HttpStatus.CREATED).body(service.insertEmprestimo(emprestimoDTO));
+//    }
+
     @PostMapping
     public ResponseEntity<Emprestimo> createEmprestimo(@RequestBody EmprestimoDTO emprestimoDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.insertEmprestimo(emprestimoDTO));
+        try {
+            Emprestimo emprestimo = service.insertEmprestimo(emprestimoDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(emprestimo);
+        } catch (Exception e) {
+            // Log exception and return appropriate response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @GetMapping("{/id}")
+
+    @GetMapping("/{id}")
     public ResponseEntity<Emprestimo> getEmprestimo(@PathVariable("id") Long id){
         var obj = service.getEmprestimoById(id);
         return ResponseEntity.ok(obj);
     }
 
-    @DeleteMapping("{/id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Emprestimo> deleteEmprestimo(@PathVariable("id") Long id){
         var emprestimo = service.getEmprestimoById(id);
         service.deleteEmprestimo(id);
         return ResponseEntity.ok(emprestimo);
     }
 
-    @PutMapping("{/id}")
-    public ResponseEntity<Emprestimo> updateEmprestimo(@PathVariable("id") Long id, @RequestBody EmprestimoDTO emprestimoDTO){
-        var updateEmprestimo = service.updateEmprestimo(id, emprestimoDTO);
-        return  ResponseEntity.ok(updateEmprestimo);
-
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Emprestimo> updateEmprestimo(@PathVariable("id") Long id, @RequestBody EmprestimoDTO emprestimoDTO){
+//        var updateEmprestimo = service.updateEmprestimo(id, emprestimoDTO);
+//        return  ResponseEntity.ok(updateEmprestimo);
+//
+//    }
 }

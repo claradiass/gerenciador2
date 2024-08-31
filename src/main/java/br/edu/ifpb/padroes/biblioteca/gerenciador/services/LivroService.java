@@ -25,7 +25,7 @@ public class LivroService {
 
     public Livro insertLivro(LivroDTO livroDTO){
 
-        Optional<Livro> livroOptional = findLivroByISBN(livroDTO.isbn());
+        Optional<Livro> livroOptional = findByIsbn(livroDTO.isbn());
         if(livroOptional.isEmpty()){
             Livro livro = new Livro();
             livro.setIsbn(livroDTO.isbn());
@@ -56,8 +56,8 @@ public class LivroService {
 
     }
 
-    public Optional<Livro> findLivroByISBN(String isbn){
-        return repositoryLivro.findLivroByISBN(isbn);
+    public Optional<Livro> findByIsbn(String isbn){
+        return repositoryLivro.findByIsbn(isbn);
     }
 
     private Autor findAutorById(Long id) {

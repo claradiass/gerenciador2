@@ -1,5 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.EmprestimoDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Livro;
 import jakarta.persistence.*;
 
@@ -13,9 +14,15 @@ public class Emprestimo implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
+    @ManyToOne
+    @JoinColumn(name = "livro_id")
     private Livro livro;
+
+
     @Column(name = "data_emprestimo")
     private Date dataEmprestimo;
     @Column(name = "data_entrega_prevista")
@@ -38,6 +45,37 @@ public class Emprestimo implements Serializable {
 
     public Emprestimo() {
     }
+
+//    public Emprestimo(EmprestimoDTO dto) {
+//        this.usuario = dto.usuario();
+//        this.livro = dto.livro();
+//        this.dataEmprestimo = dto.dataEmprestimo();
+//        this.dataEntregaPrevista = dto.dataEntregaPrevista();
+//        this.dataDevolucao = dto.dataDevolucao();
+//        this.multa = dto.multa();
+//        this.pago = dto.pago();
+//    }
+
+//    public Emprestimo(EmprestimoDTO dto, Usuario usuario, Livro livro) {
+//        this.usuario = usuario;
+//        this.livro = livro;
+//        this.dataEmprestimo = dto.dataEmprestimo();
+//        this.dataEntregaPrevista = dto.dataEntregaPrevista();
+//        this.dataDevolucao = dto.dataDevolucao();
+//        this.multa = dto.multa();
+//        this.pago = dto.pago();
+//    }
+
+    public Emprestimo(EmprestimoDTO dto, Usuario usuario, Livro livro) {
+        this.usuario = usuario;
+        this.livro = livro;
+        this.dataEmprestimo = dto.dataEmprestimo();
+        this.dataEntregaPrevista = dto.dataEntregaPrevista();
+        this.dataDevolucao = dto.dataDevolucao();
+        this.multa = dto.multa();
+        this.pago = dto.pago();
+    }
+
 
     public Long getId() {
         return id;

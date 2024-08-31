@@ -16,7 +16,7 @@ public class LivroController {
     private LivroService service;
 
     @PostMapping
-    public ResponseEntity<Livro> createNewAuthor(@RequestBody LivroDTO livroDTO) {
+    public ResponseEntity<Livro> createNewLivro(@RequestBody LivroDTO livroDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.insertLivro(livroDTO));
     }
 }
