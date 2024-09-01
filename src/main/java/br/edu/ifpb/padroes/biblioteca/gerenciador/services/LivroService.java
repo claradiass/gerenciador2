@@ -56,6 +56,14 @@ public class LivroService {
 
     }
 
+    public Livro getLivro(Long id){
+        Optional<Livro> livroOptional = repositoryLivro.findById(id);
+        if(livroOptional.isPresent()){
+            return livroOptional.get();
+        }
+        throw new RuntimeException("Livro não encontrado");
+    }
+
     public Optional<Livro> findByIsbn(String isbn){
         return repositoryLivro.findByIsbn(isbn);
     }
@@ -65,7 +73,6 @@ public class LivroService {
                 .orElseThrow(() -> new RuntimeException("Autor não encontrado com ID: " + id));
     }
 
-    // Método auxiliar para buscar gênero pelo ID
     private Genero findGeneroById(Long id) {
         return repositoryGnero.findById(id)
                 .orElseThrow(() -> new RuntimeException("Gênero não encontrado com ID: " + id));

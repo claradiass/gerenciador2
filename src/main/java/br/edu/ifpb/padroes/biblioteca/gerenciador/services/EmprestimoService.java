@@ -15,10 +15,7 @@ import java.util.Optional;
 
 @Service
 public class EmprestimoService {
-
-
     @Autowired
-    // Injetar automaticamente a dependência
     private EmprestimoRepository repository;
 
     @Autowired
@@ -27,24 +24,27 @@ public class EmprestimoService {
     @Autowired
     private LivroRepository livroRepository;
 
-//    public Emprestimo insertEmprestimo(EmprestimoDTO emprestimoDTO) {
-//        Usuario usuario = usuarioRepository.findById(emprestimoDTO.usuarioId())
-//                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-//        Livro livro = livroRepository.findById(emprestimoDTO.livroId())
-//                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
-//
-//        Emprestimo emprestimo = new Emprestimo(emprestimoDTO, usuario, livro);
-//        return repository.save(emprestimo);
-//    }
-
     public Emprestimo insertEmprestimo(EmprestimoDTO emprestimoDTO) {
-        Usuario usuario = usuarioRepository.findById(emprestimoDTO.usuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        Livro livro = livroRepository.findById(emprestimoDTO.livroId())
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+        if (emprestimoDTO.usuarioId() == null || emprestimoDTO.livroId() == null) {
+            throw new IllegalArgumentException("IDs de usuário e livro não podem ser nulos");
+        }
 
-        Emprestimo emprestimo = new Emprestimo(emprestimoDTO, usuario, livro);
-        return repository.save(emprestimo);  // O `id` será gerado automaticamente
+        Usuario usuario = findUsuarioByID(emprestimoDTO);
+        Livro livro = findLivroByID(emprestimoDTO);
+
+        Optional<Emprestimo> emprestimoExistente = findByUsuarioAndLivroAndDataEmprestimoAndDataEntregaPrevista(
+                usuario,
+                livro,
+                emprestimoDTO.dataEmprestimo(),
+                emprestimoDTO.dataEntregaPrevista()
+        );
+
+        if (emprestimoExistente.isEmpty()) {
+            Emprestimo emprestimo = new Emprestimo(emprestimoDTO, usuario, livro);
+            return repository.save(emprestimo);
+
+        }
+        throw new RuntimeException("Empréstimo já existente.");
     }
 
 
@@ -56,26 +56,6 @@ public class EmprestimoService {
         throw new RuntimeException("Empréstimo com ID " + id + " não encontrado.");
     }
 
-//    public Emprestimo insertEmprestimo(EmprestimoDTO emprestimoDTO) {
-//
-//
-//        Optional<Emprestimo> emprestimoExistente = findByUsuarioAndLivroAndDataEmprestimoAndDataEntregaPrevista(
-//                emprestimoDTO.usuario(),
-//                emprestimoDTO.livro(),
-//                emprestimoDTO.dataEmprestimo(),
-//                emprestimoDTO.dataEntregaPrevista()
-//        );
-//
-//        if (emprestimoExistente.isPresent()) {
-//            // Empréstimo já existe, não criar um novo
-//            return emprestimoExistente.get();
-//        } else {
-//            // Empréstimo não existe, criar um novo
-//            return repository.save(new Emprestimo(emprestimoDTO));
-//        }
-//    }
-
-
     public Emprestimo deleteEmprestimo(Long id) {
         Optional<Emprestimo> emprestimoOptional = repository.findById(id);
         if (emprestimoOptional.isPresent()) {
@@ -86,28 +66,43 @@ public class EmprestimoService {
         throw new RuntimeException("Empréstimo com ID " + id + " não encontrado.");
     }
 
-//    public Emprestimo updateEmprestimo(Long id, EmprestimoDTO emprestimoDTO) {
-//        Optional<Emprestimo> emprestimoOptional = repository.findById(id);
-//
-//        if (emprestimoOptional.isPresent()) {
-//            Emprestimo emprestimo = emprestimoOptional.get();
-//
-//            emprestimo.setUsuario(emprestimoDTO.usuario());
-//            emprestimo.setLivro(emprestimoDTO.livro());
-//            emprestimo.setDataEmprestimo(emprestimoDTO.dataEmprestimo());
-//            emprestimo.setDataEntregaPrevista(emprestimoDTO.dataEntregaPrevista());
-//            emprestimo.setDataDevolucao(emprestimoDTO.dataDevolucao());
-//            emprestimo.setMulta(emprestimoDTO.multa());
-//            emprestimo.setPago(emprestimoDTO.pago());
-//
-//            return repository.save(emprestimo);
-//        }
-//        throw new RuntimeException("Empréstimo com ID " + id + " não encontrado.");
-//    }
+    public Emprestimo updateEmprestimo(Long id, EmprestimoDTO emprestimoDTO) {
+        Optional<Emprestimo> emprestimoOptional = repository.findById(id);
+
+        Usuario usuario = findUsuarioByID(emprestimoDTO);
+        Livro livro = findLivroByID(emprestimoDTO);
+
+        if (emprestimoOptional.isPresent()) {
+            Emprestimo emprestimo = emprestimoOptional.get();
+
+            emprestimo.setUsuario(usuario);
+            emprestimo.setLivro(livro);
+            emprestimo.setDataEmprestimo(emprestimoDTO.dataEmprestimo());
+            emprestimo.setDataEntregaPrevista(emprestimoDTO.dataEntregaPrevista());
+            emprestimo.setDataDevolucao(emprestimoDTO.dataDevolucao());
+            emprestimo.setMulta(emprestimoDTO.multa());
+            emprestimo.setPago(emprestimoDTO.pago());
+
+            return repository.save(emprestimo);
+        }
+        throw new RuntimeException("Empréstimo com ID " + id + " não encontrado.");
+    }
 
 
     public Optional<Emprestimo> findByUsuarioAndLivroAndDataEmprestimoAndDataEntregaPrevista(Usuario usuario, Livro livro, Date dataEmprestimo, Date dataEntregaPrevista){
         return repository.findByUsuarioAndLivroAndDataEmprestimoAndDataEntregaPrevista(usuario, livro, dataEmprestimo, dataEntregaPrevista);
     }
+
+    public Usuario findUsuarioByID(EmprestimoDTO emprestimoDTO){
+        return  usuarioRepository.findById(emprestimoDTO.usuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    }
+
+    public Livro findLivroByID(EmprestimoDTO emprestimoDTO){
+        return livroRepository.findById(emprestimoDTO.livroId())
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+    }
 }
+
+
 

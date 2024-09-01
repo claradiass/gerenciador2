@@ -11,23 +11,16 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/emprestimo")
 public class EmprestimoController {
+
     @Autowired
     private EmprestimoService service;
 
-//    @PostMapping
-//    public ResponseEntity<Emprestimo> createEmprestimo(@RequestBody EmprestimoDTO emprestimoDTO){
-//        return ResponseEntity.status(HttpStatus.CREATED).body(service.insertEmprestimo(emprestimoDTO));
-//    }
-
     @PostMapping
-    public ResponseEntity<Emprestimo> createEmprestimo(@RequestBody EmprestimoDTO emprestimoDTO){
-        try {
-            Emprestimo emprestimo = service.insertEmprestimo(emprestimoDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(emprestimo);
-        } catch (Exception e) {
-            // Log exception and return appropriate response
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<Emprestimo> criarEmprestimo(@RequestBody EmprestimoDTO dto) {
+        System.out.println("DTO recebido: " + dto);
+
+        Emprestimo novoEmprestimo = service.insertEmprestimo(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoEmprestimo);
     }
 
 
@@ -44,10 +37,10 @@ public class EmprestimoController {
         return ResponseEntity.ok(emprestimo);
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Emprestimo> updateEmprestimo(@PathVariable("id") Long id, @RequestBody EmprestimoDTO emprestimoDTO){
-//        var updateEmprestimo = service.updateEmprestimo(id, emprestimoDTO);
-//        return  ResponseEntity.ok(updateEmprestimo);
-//
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Emprestimo> updateEmprestimo(@PathVariable("id") Long id, @RequestBody EmprestimoDTO emprestimoDTO){
+        var updateEmprestimo = service.updateEmprestimo(id, emprestimoDTO);
+        return  ResponseEntity.ok(updateEmprestimo);
+
+    }
 }

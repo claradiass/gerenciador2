@@ -19,4 +19,10 @@ public class LivroController {
     public ResponseEntity<Livro> createNewLivro(@RequestBody LivroDTO livroDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.insertLivro(livroDTO));
     }
+
+    @GetMapping ("/{id}")
+    public ResponseEntity<Livro> getLivro(@PathVariable("id") Long id){
+        var obj = service.getLivro(id);
+        return ResponseEntity.ok(obj);
+    }
 }
