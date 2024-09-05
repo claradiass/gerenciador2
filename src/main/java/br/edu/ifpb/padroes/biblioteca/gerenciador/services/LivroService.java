@@ -21,12 +21,13 @@ public class LivroService {
     @Autowired
     private AutorRepository repositoryAutor;
     @Autowired
-    private GeneroRepository repositoryGnero;
+    private GeneroRepository repositoryGenero;
 
     public Livro insertLivro(LivroDTO livroDTO){
 
         Optional<Livro> livroOptional = findByIsbn(livroDTO.isbn());
-        if(livroOptional.isEmpty()){
+
+        if (livroOptional.isEmpty()){
             Livro livro = new Livro();
             livro.setIsbn(livroDTO.isbn());
             livro.setTitulo(livroDTO.titulo());
@@ -34,26 +35,51 @@ public class LivroService {
             livro.setDataPublicacao(livroDTO.dataPublicacao());
             livro.setSinopse(livroDTO.sinopse());
 
-            // Converte o Set de IDs de autores em um Stream para processamento
             Set<Autor> autores = livroDTO.autores().stream()
-                    // Mapeia cada ID de autor para um objeto Autor usando o método findAutorById
-                    .map(this::findAutorById) // Método para buscar autor pelo ID
-                    // Coleta os objetos Autor em um Set para garantir que não haja duplicatas
+                    .map(this::findAutorById)
                     .collect(Collectors.toSet());
 
-            // Define a lista de autores no objeto Livro usando o Set de autores obtidos
             livro.setAutores(autores);
 
             Set<Genero> generos = livroDTO.generos().stream()
                     .map(this::findGeneroById)
                     .collect(Collectors.toSet());
+
             livro.setGeneros(generos);
 
             return repositoryLivro.save(livro);
 
         }
-        throw new RuntimeException("Livro já existente.");
 
+        throw new RuntimeException("Livro já existente.");
+    }
+
+    public Livro updateLivro(Long id, LivroDTO livroDTO) {
+        Livro livro = repositoryLivro.findById(id).orElseThrow();
+
+        livro.setIsbn(livroDTO.isbn());
+        livro.setTitulo(livroDTO.titulo());
+        livro.setQuantidade(livroDTO.quantidade());
+        livro.setDataPublicacao(livroDTO.dataPublicacao());
+        livro.setSinopse(livroDTO.sinopse());
+
+        Set<Autor> autores = livroDTO.autores().stream()
+                .map(this::findAutorById)
+                .collect(Collectors.toSet());
+
+        livro.setAutores(autores);
+
+        Set<Genero> generos = livroDTO.generos().stream()
+                .map(this::findGeneroById)
+                .collect(Collectors.toSet());
+
+        livro.setGeneros(generos);
+
+        return repositoryLivro.save(livro);
+    }
+
+    public void deleteLivro(Long id) {
+        repositoryLivro.deleteById(id);
     }
 
     public Livro getLivro(Long id){
@@ -74,7 +100,7 @@ public class LivroService {
     }
 
     private Genero findGeneroById(Long id) {
-        return repositoryGnero.findById(id)
+        return repositoryGenero.findById(id)
                 .orElseThrow(() -> new RuntimeException("Gênero não encontrado com ID: " + id));
     }
 }
