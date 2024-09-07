@@ -1,6 +1,7 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.controllers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.EmprestimoDTO;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UpdateEmprestimoDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Emprestimo;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.EmprestimoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,9 @@ public class EmprestimoController {
 
     @PostMapping
     public ResponseEntity<Emprestimo> criarEmprestimo(@RequestBody EmprestimoDTO dto) {
-        System.out.println("DTO recebido: " + dto);
-
         Emprestimo novoEmprestimo = service.insertEmprestimo(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEmprestimo);
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<Emprestimo> getEmprestimo(@PathVariable("id") Long id){
@@ -30,17 +28,18 @@ public class EmprestimoController {
         return ResponseEntity.ok(obj);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Emprestimo> deleteEmprestimo(@PathVariable("id") Long id){
-        var emprestimo = service.getEmprestimoById(id);
-        service.deleteEmprestimo(id);
-        return ResponseEntity.ok(emprestimo);
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<Emprestimo> updateEmprestimo(@PathVariable("id") Long id, @RequestBody EmprestimoDTO emprestimoDTO){
-        var updateEmprestimo = service.updateEmprestimo(id, emprestimoDTO);
+    public ResponseEntity<Emprestimo> updateEmprestimo(@PathVariable("id") Long id, @RequestBody UpdateEmprestimoDTO emprestimoDTO){
+        Emprestimo updateEmprestimo = service.updateEmprestimo(id, emprestimoDTO);
         return  ResponseEntity.ok(updateEmprestimo);
 
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmprestimo(@PathVariable("id") Long id){
+        service.getEmprestimoById(id);
+        service.deletarEmprestimo(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
