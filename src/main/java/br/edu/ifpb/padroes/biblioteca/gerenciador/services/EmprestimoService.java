@@ -1,17 +1,19 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.services;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.EmprestimoDTO;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UpdateEmprestimoDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Emprestimo;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Livro;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.EmprestimoRepository;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.LivroRepository;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.UsuarioRepository;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.EmprestimoValidatorChain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class EmprestimoService {
@@ -19,88 +21,58 @@ public class EmprestimoService {
     private EmprestimoRepository repository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
     @Autowired
-    private LivroRepository livroRepository;
+    private LivroService livroService;
+
+    @Autowired
+    private EmprestimoValidatorChain emprestimoValidatorChain;
+
 
     public Emprestimo insertEmprestimo(EmprestimoDTO emprestimoDTO) {
-        if (emprestimoDTO.usuarioId() == null || emprestimoDTO.livroId() == null) {
-            throw new IllegalArgumentException("IDs de usuário e livro não podem ser nulos");
-        }
+        validarUsuarioELivroPorEmprestimoDTO(emprestimoDTO);
 
-        Usuario usuario = findUsuarioByID(emprestimoDTO);
-        Livro livro = findLivroByID(emprestimoDTO);
+        Usuario usuario = usuarioService.getUsuarioById(emprestimoDTO.usuarioId());
+        Livro livro = livroService.getLivro(emprestimoDTO.livroId());
 
-        Optional<Emprestimo> emprestimoExistente = findByUsuarioAndLivroAndDataEmprestimoAndDataEntregaPrevista(
-                usuario,
-                livro,
-                emprestimoDTO.dataEmprestimo(),
-                emprestimoDTO.dataEntregaPrevista()
-        );
+        emprestimoValidatorChain.validate(emprestimoDTO);
 
-        if (emprestimoExistente.isEmpty()) {
-            Emprestimo emprestimo = new Emprestimo(emprestimoDTO, usuario, livro);
-            return repository.save(emprestimo);
-
-        }
-        throw new RuntimeException("Empréstimo já existente.");
+        Emprestimo emprestimo = new Emprestimo(emprestimoDTO, usuario, livro);
+        return repository.save(emprestimo);
     }
 
 
     public Emprestimo getEmprestimoById(Long id){
-        Optional<Emprestimo> emprestimoOptional = repository.findById(id);
-        if (emprestimoOptional.isPresent()) {
-            return emprestimoOptional.get();
+        return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Emprestimo não encontrado."));
+    }
+
+    public void deletarEmprestimo(Long id) {
+        Emprestimo emprestimo = getEmprestimoById(id);
+        repository.delete(emprestimo);
+    }
+
+    public Emprestimo updateEmprestimo(Long id, UpdateEmprestimoDTO data) {
+        Emprestimo emprestimo = getEmprestimoById(id);
+
+        emprestimo.setDataEntregaPrevista(data.dataEntregaPrevista());
+
+        return repository.save(emprestimo);
+
+    }
+
+    public List<Emprestimo> getEmprestimoByUsuarioId(Long id) {
+        return repository.findByUsuarioId(id);
+    }
+
+    public List<Emprestimo> getEmprestimoByLivroId(Long id) {
+        return repository.findByUsuarioId(id);
+    }
+
+    private void validarUsuarioELivroPorEmprestimoDTO(EmprestimoDTO emprestimoDTO) {
+        if (emprestimoDTO.usuarioId() == null || emprestimoDTO.livroId() == null) {
+            throw new IllegalArgumentException("IDs de usuário e livro não podem ser nulos");
         }
-        throw new RuntimeException("Empréstimo com ID " + id + " não encontrado.");
-    }
-
-    public Emprestimo deleteEmprestimo(Long id) {
-        Optional<Emprestimo> emprestimoOptional = repository.findById(id);
-        if (emprestimoOptional.isPresent()) {
-            Emprestimo emprestimo = emprestimoOptional.get();
-            repository.deleteById(id);
-            return emprestimo;
-        }
-        throw new RuntimeException("Empréstimo com ID " + id + " não encontrado.");
-    }
-
-    public Emprestimo updateEmprestimo(Long id, EmprestimoDTO emprestimoDTO) {
-        Optional<Emprestimo> emprestimoOptional = repository.findById(id);
-
-        Usuario usuario = findUsuarioByID(emprestimoDTO);
-        Livro livro = findLivroByID(emprestimoDTO);
-
-        if (emprestimoOptional.isPresent()) {
-            Emprestimo emprestimo = emprestimoOptional.get();
-
-            emprestimo.setUsuario(usuario);
-            emprestimo.setLivro(livro);
-            emprestimo.setDataEmprestimo(emprestimoDTO.dataEmprestimo());
-            emprestimo.setDataEntregaPrevista(emprestimoDTO.dataEntregaPrevista());
-            emprestimo.setDataDevolucao(emprestimoDTO.dataDevolucao());
-            emprestimo.setMulta(emprestimoDTO.multa());
-            emprestimo.setPago(emprestimoDTO.pago());
-
-            return repository.save(emprestimo);
-        }
-        throw new RuntimeException("Empréstimo com ID " + id + " não encontrado.");
-    }
-
-
-    public Optional<Emprestimo> findByUsuarioAndLivroAndDataEmprestimoAndDataEntregaPrevista(Usuario usuario, Livro livro, Date dataEmprestimo, Date dataEntregaPrevista){
-        return repository.findByUsuarioAndLivroAndDataEmprestimoAndDataEntregaPrevista(usuario, livro, dataEmprestimo, dataEntregaPrevista);
-    }
-
-    public Usuario findUsuarioByID(EmprestimoDTO emprestimoDTO){
-        return  usuarioRepository.findById(emprestimoDTO.usuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-    }
-
-    public Livro findLivroByID(EmprestimoDTO emprestimoDTO){
-        return livroRepository.findById(emprestimoDTO.livroId())
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
     }
 }
 
