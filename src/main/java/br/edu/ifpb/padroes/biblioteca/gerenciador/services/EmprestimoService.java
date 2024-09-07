@@ -12,6 +12,7 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.Empresti
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -38,6 +39,9 @@ public class EmprestimoService {
 
         emprestimoValidatorChain.validate(emprestimoDTO);
 
+        livro.setQuantidade(livro.getQuantidade() - 1);
+        livroService.updateQuantidadeLivro(livro.getId(), livro.getQuantidade());
+
         Emprestimo emprestimo = new Emprestimo(emprestimoDTO, usuario, livro);
         return repository.save(emprestimo);
     }
@@ -52,6 +56,8 @@ public class EmprestimoService {
         repository.delete(emprestimo);
     }
 
+
+
     public Emprestimo updateEmprestimo(Long id, UpdateEmprestimoDTO data) {
         Emprestimo emprestimo = getEmprestimoById(id);
 
@@ -60,6 +66,20 @@ public class EmprestimoService {
         return repository.save(emprestimo);
 
     }
+
+    public Emprestimo devolverLivro(Long id, Date dataDevolucao) {
+        Emprestimo emprestimo = getEmprestimoById(id);
+        if (emprestimo.getDataDevolucao() != null) {
+            throw new IllegalStateException("O livro já foi devolvido.");
+        } // fazer validador
+        emprestimo.setDataDevolucao(dataDevolucao);
+
+        Livro livro = emprestimo.getLivro();
+        livroService.updateQuantidadeLivro(livro.getId(), livro.getQuantidade() + 1);
+
+        return repository.save(emprestimo);
+    }
+
 
     public List<Emprestimo> getEmprestimoByUsuarioId(Long id) {
         return repository.findByUsuarioId(id);

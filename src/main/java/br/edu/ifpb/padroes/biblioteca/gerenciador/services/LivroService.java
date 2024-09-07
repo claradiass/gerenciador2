@@ -54,6 +54,12 @@ public class LivroService {
         throw new RuntimeException("Livro já existente.");
     }
 
+    public void updateQuantidadeLivro(Long id, int quantidade){
+        Livro livro = repositoryLivro.findById(id).orElseThrow();
+
+        livro.setQuantidade(quantidade);
+    }
+
     public Livro updateLivro(Long id, LivroDTO livroDTO) {
         Livro livro = repositoryLivro.findById(id).orElseThrow();
 
