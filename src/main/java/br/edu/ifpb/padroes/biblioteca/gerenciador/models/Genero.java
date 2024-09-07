@@ -1,5 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.GeneroDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -24,6 +25,10 @@ public class Genero implements Serializable {
     }
 
     public Genero() {
+    }
+
+    public Genero(GeneroDTO generoDTO){
+        this.nome = generoDTO.nome();
     }
 
 
