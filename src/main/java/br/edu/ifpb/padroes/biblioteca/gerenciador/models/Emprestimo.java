@@ -1,6 +1,7 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.EmprestimoDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ public class Emprestimo implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
