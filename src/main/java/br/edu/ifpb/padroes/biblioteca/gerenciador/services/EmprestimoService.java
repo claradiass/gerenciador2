@@ -67,7 +67,6 @@ public class EmprestimoService {
     }
 
     public Emprestimo devolverLivro(Long id, Date dataDevolucao) {
-        //analisar a data, adicionar a multa, pagamento
 
         Emprestimo emprestimo = getEmprestimoById(id);
 
@@ -79,7 +78,7 @@ public class EmprestimoService {
             throw new IllegalStateException("O livro já foi devolvido.");
         } // fazer validador
 
-        this.calcularMulta(emprestimo, dataDevolucao);
+        double multa = this.calcularMulta(emprestimo, dataDevolucao);
 
         emprestimo.setDataDevolucao(dataDevolucao);
 
@@ -104,9 +103,13 @@ public class EmprestimoService {
     }
 
     private double calcularMulta(Emprestimo emprestimo, Date dataDevolucao) {
-        int days = (int) ChronoUnit.DAYS.between((Temporal) emprestimo.getDataEntregaPrevista(), (Temporal) dataDevolucao);
+        int days = (int) ChronoUnit.DAYS.between((Temporal) emprestimo.getDataEntregaPrevista(), (Temporal) dataDevolucao) + 1;
 
-        return RATE * days;
+        if (days >= 1) {
+            return RATE * days;
+        }
+
+        return 0;
     }
 }
 
