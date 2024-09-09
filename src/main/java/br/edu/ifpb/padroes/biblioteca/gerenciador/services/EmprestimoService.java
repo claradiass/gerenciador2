@@ -6,8 +6,6 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Emprestimo;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Livro;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.EmprestimoRepository;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.LivroRepository;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.UsuarioRepository;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.EmprestimoValidatorChain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
