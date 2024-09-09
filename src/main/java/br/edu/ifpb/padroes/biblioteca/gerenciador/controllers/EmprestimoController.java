@@ -41,7 +41,6 @@ public class EmprestimoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmprestimo(@PathVariable("id") Long id){
-        service.getEmprestimoById(id);
         service.deletarEmprestimo(id);
         return ResponseEntity.noContent().build();
     }

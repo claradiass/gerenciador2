@@ -12,12 +12,16 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.Empresti
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class EmprestimoService {
+
+    private final static double RATE = 1;
     @Autowired
     private EmprestimoRepository repository;
 
@@ -29,7 +33,6 @@ public class EmprestimoService {
 
     @Autowired
     private EmprestimoValidatorChain emprestimoValidatorChain;
-
 
     public Emprestimo insertEmprestimo(EmprestimoDTO emprestimoDTO) {
         validarUsuarioELivroPorEmprestimoDTO(emprestimoDTO);
@@ -56,8 +59,6 @@ public class EmprestimoService {
         repository.delete(emprestimo);
     }
 
-
-
     public Emprestimo updateEmprestimo(Long id, UpdateEmprestimoDTO data) {
         Emprestimo emprestimo = getEmprestimoById(id);
 
@@ -68,10 +69,20 @@ public class EmprestimoService {
     }
 
     public Emprestimo devolverLivro(Long id, Date dataDevolucao) {
+        //analisar a data, adicionar a multa, pagamento
+
         Emprestimo emprestimo = getEmprestimoById(id);
+
+        if (dataDevolucao == null) {
+            throw new RuntimeException("Data de devolução é um requerida.");
+        }
+
         if (emprestimo.getDataDevolucao() != null) {
             throw new IllegalStateException("O livro já foi devolvido.");
         } // fazer validador
+
+        this.calcularMulta(emprestimo, dataDevolucao);
+
         emprestimo.setDataDevolucao(dataDevolucao);
 
         Livro livro = emprestimo.getLivro();
@@ -79,7 +90,6 @@ public class EmprestimoService {
 
         return repository.save(emprestimo);
     }
-
 
     public List<Emprestimo> getEmprestimoByUsuarioId(Long id) {
         return repository.findByUsuarioId(id);
@@ -93,6 +103,12 @@ public class EmprestimoService {
         if (emprestimoDTO.usuarioId() == null || emprestimoDTO.livroId() == null) {
             throw new IllegalArgumentException("IDs de usuário e livro não podem ser nulos");
         }
+    }
+
+    private double calcularMulta(Emprestimo emprestimo, Date dataDevolucao) {
+        int days = (int) ChronoUnit.DAYS.between((Temporal) emprestimo.getDataEntregaPrevista(), (Temporal) dataDevolucao);
+
+        return RATE * days;
     }
 }
 
