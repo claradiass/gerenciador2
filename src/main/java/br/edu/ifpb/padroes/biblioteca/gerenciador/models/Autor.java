@@ -1,6 +1,7 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.RequestAuthorDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ public class Autor implements Serializable {
 
     private String nome;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "autores")
     private Set<Livro> livros = new HashSet<>();
 

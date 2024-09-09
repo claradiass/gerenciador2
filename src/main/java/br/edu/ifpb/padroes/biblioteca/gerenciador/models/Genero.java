@@ -1,5 +1,7 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.GeneroDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -13,6 +15,7 @@ public class Genero implements Serializable {
     private Long id;
     private String nome;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "generos")
     private Set<Livro> livros;
 
@@ -20,6 +23,14 @@ public class Genero implements Serializable {
         this.id = id;
         this.nome = nome;
     }
+
+    public Genero() {
+    }
+
+    public Genero(GeneroDTO generoDTO){
+        this.nome = generoDTO.nome();
+    }
+
 
     public Long getId() {
         return id;
