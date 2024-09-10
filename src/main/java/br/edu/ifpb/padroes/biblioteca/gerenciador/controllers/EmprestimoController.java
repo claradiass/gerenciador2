@@ -1,6 +1,7 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.controllers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.EmprestimoDTO;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.RequestPagamentoDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.ResquestDevolucaoDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UpdateEmprestimoDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Emprestimo;
@@ -41,17 +42,20 @@ public class EmprestimoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmprestimo(@PathVariable("id") Long id){
-        service.getEmprestimoById(id);
         service.deletarEmprestimo(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/devolucao")
+    @PutMapping("/devolucao/{id}")
     public ResponseEntity<Emprestimo> devolverLivro(@PathVariable("id") Long id, @RequestBody ResquestDevolucaoDTO devolucaoDTO) {
         Emprestimo emprestimo = service.devolverLivro(id, devolucaoDTO.dataDevolucao());
         return ResponseEntity.ok(emprestimo);
     }
 
-
+    @PutMapping("/pagamento")
+    public ResponseEntity<Void> pagarMulta(@RequestBody RequestPagamentoDTO pagamentoDTO) {
+        service.pagarMulta(pagamentoDTO);
+        return ResponseEntity.ok().build();
+    }
 
 }

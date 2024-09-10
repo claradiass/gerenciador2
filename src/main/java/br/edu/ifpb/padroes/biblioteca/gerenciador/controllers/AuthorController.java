@@ -26,7 +26,7 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Autor> getAutores(@PathVariable("id") Long id) {
+    public ResponseEntity<Autor> getAuthors(@PathVariable("id") Long id) {
         var obj = service.getAutorById(id);
         return ResponseEntity.ok(obj);
     }
