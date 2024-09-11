@@ -7,7 +7,7 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Emprestimo;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Livro;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.EmprestimoRepository;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.EmprestimoNotFoundException;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundException;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.Handler;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.ChainBuilder;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers.*;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -24,7 +23,6 @@ public class EmprestimoService {
 
     private final static double DAILY_LATE_FEE = 1;
 
-    private final static Calendar calendar = Calendar.getInstance();
     @Autowired
     private EmprestimoRepository repository;
 
@@ -46,9 +44,10 @@ public class EmprestimoService {
         Handler chain = new ChainBuilder()
                 .addHandler(new UsuarioExiste(usuarioService))
                 .addHandler(new LivroExiste(livroService))
-                .addHandler(new UsuarioJaPossuiEmprestimoDoLivro(repository, usuarioService, livroService))
                 .addHandler(new UsuarioExcedeuLimiteEmprestimos(repository, usuarioService))
+                .addHandler(new UsuarioJaPossuiEmprestimoDoLivro(repository, usuarioService, livroService))
                 .addHandler(new QuantidadeLivrosInsuficiente(livroService))
+                .addHandler(new PagamentoEmprestimoNaoRealizado(repository))
                 .build();
 
         chain.check(emprestimoDTO);
@@ -60,10 +59,9 @@ public class EmprestimoService {
         return repository.save(emprestimo);
     }
 
-
     public Emprestimo getEmprestimoById(Long id){
         return repository.findById(id)
-                .orElseThrow(EmprestimoNotFoundException::new);
+                .orElseThrow(NotFoundException::new);
     }
 
     public void deletarEmprestimo(Long id) {
@@ -92,9 +90,7 @@ public class EmprestimoService {
             throw new IllegalStateException("O livro já foi devolvido.");
         }
 
-        if (!emprestimo.isPago()) {
-            throw new RuntimeException("Você precisar pagar a multa de atraso primeiro.");
-        }
+        calcularMulta(emprestimo, dataDevolucao);
 
         emprestimo.setDataDevolucao(dataDevolucao);
 
@@ -107,15 +103,11 @@ public class EmprestimoService {
     public void pagarMulta(Long id, RequestPagamentoDTO pagamentoDTO) {
         Emprestimo emprestimo = getEmprestimoById(id);
 
-//        if (emprestimo.getDataDevolucao() == null) {
-//            throw new RuntimeException("Você não pode pagar este emprestimo, pois o livro ainda não foi devolvido.");
-//        }
-
         if (emprestimo.isPago()) {
             throw new RuntimeException("Este emprestimo já foi pago.");
         }
 
-        double multa = calcularMulta(emprestimo, pagamentoDTO.dataDevolucao());
+        double multa = emprestimo.getMulta();
 
         if (multa <= 0) {
             throw new RuntimeException("Empréstimo sem pendências.");
@@ -131,7 +123,7 @@ public class EmprestimoService {
         }
     }
 
-    private double calcularMulta(Emprestimo emprestimo, LocalDate dataDevolucao) {
+    private void calcularMulta(Emprestimo emprestimo, LocalDate dataDevolucao) {
         double multa = 0.0;
 
         if (dataDevolucao.isAfter(emprestimo.getDataEntregaPrevista())) {
@@ -141,10 +133,7 @@ public class EmprestimoService {
             repository.save(emprestimo);
         }
 
-        return multa;
     }
-
-    // Pra que esses metodos aq ??
 
     public List<Emprestimo> getEmprestimoByUsuarioId(Long id) {
         return repository.findByUsuarioId(id);
