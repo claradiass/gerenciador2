@@ -7,6 +7,7 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Emprestimo;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Livro;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.EmprestimoRepository;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.EmprestimoNotFoundException;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.Handler;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.ChainBuilder;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers.*;
@@ -17,7 +18,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class EmprestimoService {
@@ -62,7 +62,8 @@ public class EmprestimoService {
 
 
     public Emprestimo getEmprestimoById(Long id){
-        return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Emprestimo não encontrado."));
+        return repository.findById(id)
+                .orElseThrow(EmprestimoNotFoundException::new);
     }
 
     public void deletarEmprestimo(Long id) {

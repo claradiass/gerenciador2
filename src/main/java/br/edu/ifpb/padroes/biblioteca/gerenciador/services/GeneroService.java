@@ -3,6 +3,8 @@ package br.edu.ifpb.padroes.biblioteca.gerenciador.services;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.GeneroDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Genero;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.GeneroRepository;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.GeneroAlreadyExistsException;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.GeneroNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +18,12 @@ public class GeneroService {
         if (genero == null) {
             return repository.save(new Genero(generoDTO));
         }
-        throw new RuntimeException("");
+        throw new GeneroAlreadyExistsException();
     }
 
     public Genero getGeneroById(Long id){
-        return repository.findById(id).orElseThrow();
-    }
-
-    public Genero findGeneroByNome(GeneroDTO generoDTO){
-        return repository.findGeneroByNome(generoDTO.nome());
+        return repository.findById(id)
+                .orElseThrow(GeneroNotFoundException::new);
     }
 
     public Genero updateGenero(Long id, GeneroDTO generoDTO){
@@ -36,7 +35,6 @@ public class GeneroService {
 
     public void deleteGenero(Long id){
         Genero genero = getGeneroById(id);
-        //validator
         repository.delete(genero);
     }
 }
