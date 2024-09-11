@@ -5,7 +5,7 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Emprestimo;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.EmprestimoRepository;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.UsuarioRepository;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.BaseHandler;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Component
-public class PagamentoEmprestimoAtrasado extends BaseHandler {
+public class PagamentoEmprestimoAtrasado extends Handler {
 
     private final EmprestimoRepository emprestimoRepository;
     private final UsuarioRepository usuarioRepository;
@@ -32,8 +32,9 @@ public class PagamentoEmprestimoAtrasado extends BaseHandler {
 
         if (!emprestimos.isEmpty()) {
             throw new RuntimeException("Para fazer um empréstimo, você precisa devolver os empréstimos pendentes.");
+        }else if (getNextHandler() != null) {
+            getNextHandler().check(data);
         }
 
-        checkNext(data);
     }
 }
