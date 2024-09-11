@@ -31,10 +31,12 @@ public class UsuarioExcedeuLimiteEmprestimos extends Handler {
     public void check(EmprestimoDTO data) {
         Usuario user = service.getUsuarioById(data.usuarioId());
 
-        List<Emprestimo> emprestimos = emprestimoRepository.findNotPaidEmprestimoByUsuarioId(user.getId());
+        List<Emprestimo> emprestimos = emprestimoRepository.findNotRefundEmprestimo(user.getId());
+
+        System.out.printf("" + emprestimos.size());
 
         if (emprestimos.size() >= LIMIT) {
-            throw new RuntimeException("Você possui 3 ou mais livros não devolvidos ainda.");
+            throw new RuntimeException("Você possui 3 livros não devolvidos ainda.");
         }else if (getNextHandler() != null) {
             getNextHandler().check(data);
         }

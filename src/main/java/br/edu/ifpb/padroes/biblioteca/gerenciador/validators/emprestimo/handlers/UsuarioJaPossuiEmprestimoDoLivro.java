@@ -34,7 +34,7 @@ public class UsuarioJaPossuiEmprestimoDoLivro extends Handler {
         if (currentUser != null && currentLivro != null) {
             var searchForEmprestimo = emprestimoRepository.findByUsuarioAndLivro(currentUser.getId(), currentLivro.getId());
             if (searchForEmprestimo.isPresent()) {
-                throw new RuntimeException("Você já possui um emprestimo desse mesmo livro.");
+                throw new RuntimeException("Você já possui um empréstimo desse mesmo livro.");
             }
         }else if (getNextHandler() != null) {
             getNextHandler().check(data);

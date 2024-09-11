@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Component
-public class PagamentoEmprestimoAtrasado extends Handler {
+public class DevolucaoEmprestimoAtrasado extends Handler {
 
     private final EmprestimoRepository emprestimoRepository;
     private final UsuarioRepository usuarioRepository;
 
     @Autowired
-    public PagamentoEmprestimoAtrasado(EmprestimoRepository emprestimoRepository, UsuarioRepository usuarioRepository) {
+    public DevolucaoEmprestimoAtrasado(EmprestimoRepository emprestimoRepository, UsuarioRepository usuarioRepository) {
         this.emprestimoRepository = emprestimoRepository;
         this.usuarioRepository = usuarioRepository;
     }
@@ -31,10 +31,9 @@ public class PagamentoEmprestimoAtrasado extends Handler {
         List<Emprestimo> emprestimos = emprestimoRepository.findOverdueEmprestimo(user.getId()).stream().toList();
 
         if (!emprestimos.isEmpty()) {
-            throw new RuntimeException("Para fazer um empréstimo, você precisa devolver os empréstimos pendentes.");
+            throw new RuntimeException("Você precisa devolver os empréstimos pendentes para realizar novos empréstimos.");
         }else if (getNextHandler() != null) {
             getNextHandler().check(data);
         }
-
     }
 }
