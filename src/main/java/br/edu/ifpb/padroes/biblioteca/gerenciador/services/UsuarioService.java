@@ -3,7 +3,7 @@ package br.edu.ifpb.padroes.biblioteca.gerenciador.services;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UsuarioDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.UsuarioRepository;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.UsuarioNotFoundException;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,9 @@ public class UsuarioService {
     private UsuarioRepository repository;
 
     public Usuario getUsuarioById(Long id) {
-        return repository.findById(id).orElseThrow(UsuarioNotFoundException::new);
+        return repository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
     public Usuario addUsuario(UsuarioDTO usuarioDTO) {
         Usuario novoUsuario = new Usuario(usuarioDTO);
         return repository.save(novoUsuario);
