@@ -7,12 +7,10 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UpdateEmprestimoDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Emprestimo;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.EmprestimoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 
 @RestController
 @RequestMapping("/emprestimo")
@@ -52,9 +50,9 @@ public class EmprestimoController {
         return ResponseEntity.ok(emprestimo);
     }
 
-    @PutMapping("/pagamento")
-    public ResponseEntity<Void> pagarMulta(@RequestBody RequestPagamentoDTO pagamentoDTO) {
-        service.pagarMulta(pagamentoDTO);
+    @PutMapping("/pagamento/{id}")
+    public ResponseEntity<Void> pagarMulta(@PathVariable("id") Long id, @RequestBody RequestPagamentoDTO pagamentoDTO) {
+        service.pagarMulta(id, pagamentoDTO);
         return ResponseEntity.ok().build();
     }
 
