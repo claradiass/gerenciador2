@@ -19,7 +19,7 @@ public class EmprestimoController {
     @Autowired
     private EmprestimoService service;
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<Emprestimo> criarEmprestimo(@RequestBody EmprestimoDTO dto) {
         Emprestimo novoEmprestimo = service.insertEmprestimo(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoEmprestimo);
@@ -31,14 +31,14 @@ public class EmprestimoController {
         return ResponseEntity.ok(obj);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<Emprestimo> updateEmprestimo(@PathVariable("id") Long id, @RequestBody UpdateEmprestimoDTO emprestimoDTO){
         Emprestimo updateEmprestimo = service.updateEmprestimo(id, emprestimoDTO);
         return  ResponseEntity.ok(updateEmprestimo);
 
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteEmprestimo(@PathVariable("id") Long id){
         service.deletarEmprestimo(id);
         return ResponseEntity.noContent().build();
