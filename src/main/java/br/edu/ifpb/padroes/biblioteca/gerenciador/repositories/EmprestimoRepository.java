@@ -14,7 +14,8 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
             value = "SELECT * FROM emprestimo "
                 + "WHERE emprestimo.id_usuario = :idUsuario "
                 + "AND emprestimo.id_livro = :idLivro "
-                + "AND emprestimo.data_devolucao IS NULL;",
+                + "AND (emprestimo.data_devolucao IS NULL "
+                + "OR emprestimo.pago = false AND emprestimo.multa > 0.0);",
         nativeQuery = true
     )
     Optional<Emprestimo> findByUsuarioAndLivro(Long idUsuario, Long idLivro);
@@ -31,11 +32,20 @@ public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
 
     @Query(
             value = "SELECT * FROM emprestimo "
+                    + "WHERE emprestimo.multa > 0.0 "
+                    + "AND emprestimo.id_usuario = :idUsuario "
+                    + "AND emprestimo.pago = false;",
+            nativeQuery = true
+    )
+    List<Emprestimo> findNotPaidEmprestimo(@Param("idUsuario") Long idUsuario);
+
+    @Query(
+            value = "SELECT * FROM emprestimo "
                     + "WHERE emprestimo.id_usuario = :idUsuario "
                     + "AND emprestimo.data_devolucao IS NULL;",
             nativeQuery = true
     )
-    List<Emprestimo> findNotPaidEmprestimoByUsuarioId(@Param("idUsuario") Long idUsuario);
+    List<Emprestimo> findNotRefundEmprestimo(@Param("idUsuario") Long idUsuario);
 
     List<Emprestimo> findByUsuarioId(Long id);
 
