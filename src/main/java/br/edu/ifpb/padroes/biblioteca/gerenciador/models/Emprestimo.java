@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "emprestimo")
@@ -25,15 +25,15 @@ public class Emprestimo implements Serializable {
 
 
     @Column(name = "data_emprestimo")
-    private Date dataEmprestimo;
+    private LocalDate dataEmprestimo;
     @Column(name = "data_entrega_prevista")
-    private Date dataEntregaPrevista;
+    private LocalDate dataEntregaPrevista;
     @Column(name = "data_devolucao")
-    private Date dataDevolucao;
+    private LocalDate dataDevolucao;
     private double multa;
     private boolean pago;
 
-    public Emprestimo(Long id, Usuario usuario, Livro livro, Date dataEmprestimo, Date dataEntregaPrevista, Date dataDevolucao, double multa, boolean pago) {
+    public Emprestimo(Long id, Usuario usuario, Livro livro, LocalDate dataEmprestimo, LocalDate dataEntregaPrevista, LocalDate dataDevolucao, double multa, boolean pago) {
         this.id = id;
         this.usuario = usuario;
         this.livro = livro;
@@ -52,9 +52,9 @@ public class Emprestimo implements Serializable {
         this.livro = livro;
         this.dataEmprestimo = dto.dataEmprestimo();
         this.dataEntregaPrevista = dto.dataEntregaPrevista();
-        this.dataDevolucao = dto.dataDevolucao();
-        this.multa = dto.multa();
-        this.pago = dto.pago();
+        this.dataDevolucao = null;
+        this.multa = 0;
+        this.pago = false;
     }
 
 
@@ -82,27 +82,27 @@ public class Emprestimo implements Serializable {
         this.livro = livro;
     }
 
-    public Date getDataEmprestimo() {
+    public LocalDate getDataEmprestimo() {
         return dataEmprestimo;
     }
 
-    public void setDataEmprestimo(Date dataEmprestimo) {
+    public void setDataEmprestimo(LocalDate dataEmprestimo) {
         this.dataEmprestimo = dataEmprestimo;
     }
 
-    public Date getDataEntregaPrevista() {
+    public LocalDate getDataEntregaPrevista() {
         return dataEntregaPrevista;
     }
 
-    public void setDataEntregaPrevista(Date dataEntregaPrevista) {
+    public void setDataEntregaPrevista(LocalDate dataEntregaPrevista) {
         this.dataEntregaPrevista = dataEntregaPrevista;
     }
 
-    public Date getDataDevolucao() {
+    public LocalDate getDataDevolucao() {
         return dataDevolucao;
     }
 
-    public void setDataDevolucao(Date dataDevolucao) {
+    public void setDataDevolucao(LocalDate dataDevolucao) {
         this.dataDevolucao = dataDevolucao;
     }
 

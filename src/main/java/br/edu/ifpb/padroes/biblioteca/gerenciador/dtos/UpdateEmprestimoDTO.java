@@ -1,6 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.dtos;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-public record UpdateEmprestimoDTO(Date dataEntregaPrevista) {
+public record UpdateEmprestimoDTO(LocalDate dataEntregaPrevista) {
 }
