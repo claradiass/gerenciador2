@@ -1,11 +1,10 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.AuthorRequestDTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,9 +18,9 @@ public class Author implements Serializable {
     @Column(name = "nome")
     private String name;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "autores")
-    private Set<Book> books = new HashSet<>();
+    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private Set<Book> books;
 
     public Author() {
     }
@@ -51,11 +50,11 @@ public class Author implements Serializable {
         this.name = name;
     }
 
-    public Set<Book> getLivros() {
+    public Set<Book> getBooks() {
         return books;
     }
 
-    public void setLivros(Set<Book> books) {
+    public void setBooks(Set<Book> books) {
         this.books = books;
     }
 

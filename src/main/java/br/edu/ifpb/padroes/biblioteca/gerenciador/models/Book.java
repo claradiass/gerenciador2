@@ -1,5 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -26,6 +27,7 @@ public class Book implements Serializable {
 
     @Column(name = "quantidade")
     private int quantity;
+
     @Column(name = "ano_edicao")
     private LocalDate publicationDate;
 
@@ -35,6 +37,7 @@ public class Book implements Serializable {
             joinColumns = @JoinColumn(name = "id_livro"),
             inverseJoinColumns = @JoinColumn(name = "id_autor")
     )
+    @JsonManagedReference
     private Set<Author> authors = new HashSet<>();
 
     @ManyToMany
@@ -43,6 +46,7 @@ public class Book implements Serializable {
             joinColumns = @JoinColumn(name = "id_livro"),
             inverseJoinColumns = @JoinColumn(name = "id_genero")
     )
+    @JsonManagedReference
     private Set<Genre> genres = new HashSet<>();
 
     public Book() {

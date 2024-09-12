@@ -1,7 +1,7 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.GenreRequestDTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,8 +17,8 @@ public class Genre implements Serializable {
     @Column(name = "nome")
     private String name;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "generos")
+    @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
+    @JsonBackReference
     private Set<Book> books;
 
     public Genre(Long id, String name) {
@@ -50,11 +50,11 @@ public class Genre implements Serializable {
         this.name = name;
     }
 
-    public Set<Book> getLivros() {
+    public Set<Book> getBooks() {
         return books;
     }
 
-    public void setLivros(Set<Book> books) {
+    public void setBooks(Set<Book> books) {
         this.books = books;
     }
 }
