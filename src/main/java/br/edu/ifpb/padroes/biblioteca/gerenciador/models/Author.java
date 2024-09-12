@@ -1,6 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
-import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.RequestAuthorDTO;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.AuthorRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -11,27 +11,28 @@ import java.util.Set;
 
 @Entity
 @Table(name = "autor")
-public class Autor implements Serializable {
+public class Author implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
+    @Column(name = "nome")
+    private String name;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "autores")
-    private Set<Livro> livros = new HashSet<>();
+    private Set<Book> books = new HashSet<>();
 
-    public Autor() {
+    public Author() {
     }
 
-    public Autor(Long id, String nome) {
+    public Author(Long id, String name) {
         this.id = id;
-        this.nome = nome;
+        this.name = name;
     }
 
-    public Autor(RequestAuthorDTO data) {
-        this.nome = data.nome();
+    public Author(AuthorRequestDTO data) {
+        this.name = data.nome();
     }
 
     public Long getId() {
@@ -42,28 +43,28 @@ public class Autor implements Serializable {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Set<Livro> getLivros() {
-        return livros;
+    public Set<Book> getLivros() {
+        return books;
     }
 
-    public void setLivros(Set<Livro> livros) {
-        this.livros = livros;
+    public void setLivros(Set<Book> books) {
+        this.books = books;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Autor autor = (Autor) o;
-        return Objects.equals(id, autor.id);
+        Author author = (Author) o;
+        return Objects.equals(id, author.id);
     }
 
     @Override
