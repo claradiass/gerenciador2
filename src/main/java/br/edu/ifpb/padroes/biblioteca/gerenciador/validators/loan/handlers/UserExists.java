@@ -1,4 +1,4 @@
-package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers;
+package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.handlers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.UserService;

@@ -1,4 +1,4 @@
-package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo;
+package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.Handler;
 import org.springframework.stereotype.Component;

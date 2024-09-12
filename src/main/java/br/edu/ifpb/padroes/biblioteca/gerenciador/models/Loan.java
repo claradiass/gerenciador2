@@ -25,8 +25,10 @@ public class Loan implements Serializable {
 
     @Column(name = "data_emprestimo")
     private LocalDate loanDate;
+
     @Column(name = "data_entrega_prevista")
     private LocalDate estimatedDate;
+
     @Column(name = "data_devolucao")
     private LocalDate refundDate;
 
@@ -60,7 +62,6 @@ public class Loan implements Serializable {
         this.paid = false;
     }
 
-
     public Long getId() {
         return id;
     }
@@ -77,11 +78,11 @@ public class Loan implements Serializable {
         this.user = user;
     }
 
-    public Book getLivro() {
+    public Book getBook() {
         return book;
     }
 
-    public void setLivro(Book book) {
+    public void setBook(Book book) {
         this.book = book;
     }
 

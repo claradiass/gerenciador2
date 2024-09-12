@@ -1,4 +1,4 @@
-package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers;
+package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.handlers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Book;
@@ -19,7 +19,7 @@ public class InsufficientQuantityBook extends Handler {
 
     @Override
     public void check(LoanRequestDTO data) {
-        Book book = service.getLivro(data.livroId());
+        Book book = service.getBook(data.livroId());
 
         if (book.getQuantity() < 1) {
             throw new MinimumQuantityBookException();

@@ -1,4 +1,4 @@
-package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers;
+package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.handlers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Book;
@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class SameBookLoan extends Handler {
 
-    private final LoanRepository emprestimoRepository;
+    private final LoanRepository loanRepository;
     private final UserService userService;
     private final BookService bookService;
 
     @Autowired
-    public SameBookLoan(LoanRepository emprestimoRepository, UserService userService, BookService bookService) {
-        this.emprestimoRepository = emprestimoRepository;
+    public SameBookLoan(LoanRepository loanRepository, UserService userService, BookService bookService) {
+        this.loanRepository = loanRepository;
         this.userService = userService;
         this.bookService = bookService;
     }
@@ -28,12 +28,12 @@ public class SameBookLoan extends Handler {
     @Override
     public void check(LoanRequestDTO data) {
         User currentUser = userService.getUsuarioById(data.usuarioId());
-        Book currentBook = bookService.getLivro(data.livroId());
+        Book currentBook = bookService.getBook(data.livroId());
 
         if (currentUser != null && currentBook != null) {
-            var searchForEmprestimo = emprestimoRepository.findByUsuarioAndLivro(currentUser.getId(), currentBook.getId());
+            var searchForLoan = loanRepository.findByUsuarioAndLivro(currentUser.getId(), currentBook.getId());
 
-            if (searchForEmprestimo.isPresent()) {
+            if (searchForLoan.isPresent()) {
                 throw new LoanSameBookException();
             }
 

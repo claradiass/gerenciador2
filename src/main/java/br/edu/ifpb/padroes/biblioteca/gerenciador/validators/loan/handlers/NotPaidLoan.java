@@ -1,4 +1,4 @@
-package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers;
+package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.handlers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Loan;
@@ -13,15 +13,15 @@ import java.util.List;
 @Component
 public class NotPaidLoan extends Handler {
 
-    private LoanRepository emprestimoRepository;
+    private LoanRepository loanRepository;
 
     @Autowired
-    public NotPaidLoan(LoanRepository emprestimoRepository) {
-        this.emprestimoRepository = emprestimoRepository;
+    public NotPaidLoan(LoanRepository loanRepository) {
+        this.loanRepository = loanRepository;
     }
     @Override
     public void check(LoanRequestDTO data) {
-        List<Loan> emprestimosNotPaid = emprestimoRepository.findNotPaidEmprestimo(data.usuarioId());
+        List<Loan> emprestimosNotPaid = loanRepository.findNotPaidEmprestimo(data.usuarioId());
 
         if (!emprestimosNotPaid.isEmpty()) {
             throw new NotPaidException();

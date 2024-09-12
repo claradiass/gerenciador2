@@ -1,4 +1,4 @@
-package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers;
+package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.handlers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Loan;
@@ -17,12 +17,12 @@ public class ExceededLimitLoan extends Handler {
 
     private static final int LIMIT = 3;
 
-    private final LoanRepository emprestimoRepository;
+    private final LoanRepository loanRepository;
     private final UserService service;
 
     @Autowired
-    public ExceededLimitLoan(LoanRepository emprestimoRepository, UserService service) {
-        this.emprestimoRepository = emprestimoRepository;
+    public ExceededLimitLoan(LoanRepository loanRepository, UserService service) {
+        this.loanRepository = loanRepository;
         this.service = service;
     }
 
@@ -30,7 +30,7 @@ public class ExceededLimitLoan extends Handler {
     public void check(LoanRequestDTO data) {
         User user = service.getUsuarioById(data.usuarioId());
 
-        List<Loan> loans = emprestimoRepository.findNotRefundEmprestimo(user.getId());
+        List<Loan> loans = loanRepository.findNotRefundEmprestimo(user.getId());
 
         if (loans.size() >= LIMIT) {
             throw new LoanLimitException();

@@ -1,4 +1,4 @@
-package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers;
+package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.handlers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.BookService;
@@ -17,7 +17,7 @@ public class BookExists extends Handler {
 
     @Override
     public void check(LoanRequestDTO data) {
-        bookService.getLivro(data.livroId());
+        bookService.getBook(data.livroId());
 
         if (getNextHandler() != null) {
             getNextHandler().check(data);

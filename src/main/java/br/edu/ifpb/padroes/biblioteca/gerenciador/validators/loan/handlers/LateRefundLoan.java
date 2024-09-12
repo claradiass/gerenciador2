@@ -1,4 +1,4 @@
-package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers;
+package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.handlers;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Loan;
@@ -16,12 +16,12 @@ import java.util.NoSuchElementException;
 @Component
 public class LateRefundLoan extends Handler {
 
-    private final LoanRepository emprestimoRepository;
+    private final LoanRepository loanRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public LateRefundLoan(LoanRepository emprestimoRepository, UserRepository userRepository) {
-        this.emprestimoRepository = emprestimoRepository;
+    public LateRefundLoan(LoanRepository loanRepository, UserRepository userRepository) {
+        this.loanRepository = loanRepository;
         this.userRepository = userRepository;
     }
 
@@ -29,7 +29,7 @@ public class LateRefundLoan extends Handler {
     public void check(LoanRequestDTO data) {
         User user = userRepository.findById(data.usuarioId()).orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));
 
-        List<Loan> loans = emprestimoRepository.findOverdueEmprestimo(user.getId()).stream().toList();
+        List<Loan> loans = loanRepository.findOverdueEmprestimo(user.getId()).stream().toList();
 
         if (!loans.isEmpty()) {
             throw new PendingLoanException();
