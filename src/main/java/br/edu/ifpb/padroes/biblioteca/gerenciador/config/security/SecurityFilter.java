@@ -1,6 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.config.security;
 
-import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.UsuarioRepository;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     TokenService tokenService;
     @Autowired
-    UsuarioRepository repository;
+    UserRepository repository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

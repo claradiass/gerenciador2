@@ -1,6 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.validators;
 
-import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.EmprestimoDTO;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanRequestDTO;
 
 public abstract class Handler {
     protected Handler nextHandler;
@@ -13,6 +13,6 @@ public abstract class Handler {
         return this.nextHandler;
     }
 
-    public abstract void check(EmprestimoDTO data);
+    public abstract void check(LoanRequestDTO data);
 
 }
