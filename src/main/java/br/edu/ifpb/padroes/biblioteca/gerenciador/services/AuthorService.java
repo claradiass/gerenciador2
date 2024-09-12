@@ -14,7 +14,7 @@ public class AuthorService {
     private AuthorRepository repository;
 
     public Author insertAuthor(AuthorRequestDTO authorDTO) {
-        var author = repository.findAutorByNome(authorDTO.nome());
+        var author = repository.findAuthorByName(authorDTO.nome());
 
         if (author != null) { throw new AlreadyExistsException(); }
 

@@ -14,7 +14,7 @@ public class GenreService {
     private GenreRepository repository;
 
     public Genre insertGenre(GenreRequestDTO genreRequestDTO){
-        var genre = repository.findGeneroByNome(genreRequestDTO.nome());
+        var genre = repository.findGenreByName(genreRequestDTO.nome());
 
         if (genre == null) {
             return repository.save(new Genre(genreRequestDTO));
