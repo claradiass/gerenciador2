@@ -1,10 +1,10 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.repositories;
 
-import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     UserDetails findByCpf(String cpf);
 }

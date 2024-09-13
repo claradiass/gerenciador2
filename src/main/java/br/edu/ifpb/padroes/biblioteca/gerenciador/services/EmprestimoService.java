@@ -7,25 +7,22 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Emprestimo;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Livro;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.EmprestimoRepository;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.EmprestimoValidatorChain;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundException;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.Handler;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.ChainBuilder;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handlers.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class EmprestimoService {
 
-    private final static double RATE = 1;
+    private final static double DAILY_LATE_FEE = 1;
 
-    private final static Calendar calendar = Calendar.getInstance();
     @Autowired
     private EmprestimoRepository repository;
 
@@ -36,7 +33,7 @@ public class EmprestimoService {
     private LivroService livroService;
 
     @Autowired
-    private EmprestimoValidatorChain emprestimoValidatorChain;
+    private ChainBuilder emprestimoValidatorChain;
 
     public Emprestimo insertEmprestimo(EmprestimoDTO emprestimoDTO) {
         validarUsuarioELivroPorEmprestimoDTO(emprestimoDTO);
@@ -44,7 +41,16 @@ public class EmprestimoService {
         Usuario usuario = usuarioService.getUsuarioById(emprestimoDTO.usuarioId());
         Livro livro = livroService.getLivro(emprestimoDTO.livroId());
 
-        emprestimoValidatorChain.validate(emprestimoDTO);
+        Handler chain = new ChainBuilder()
+                .addHandler(new UsuarioExiste(usuarioService))
+                .addHandler(new LivroExiste(livroService))
+                .addHandler(new UsuarioExcedeuLimiteEmprestimos(repository, usuarioService))
+                .addHandler(new UsuarioJaPossuiEmprestimoDoLivro(repository, usuarioService, livroService))
+                .addHandler(new QuantidadeLivrosInsuficiente(livroService))
+                .addHandler(new PagamentoEmprestimoNaoRealizado(repository))
+                .build();
+
+        chain.check(emprestimoDTO);
 
         livro.setQuantidade(livro.getQuantidade() - 1);
         livroService.updateQuantidadeLivro(livro.getId(), livro.getQuantidade());
@@ -53,9 +59,9 @@ public class EmprestimoService {
         return repository.save(emprestimo);
     }
 
-
     public Emprestimo getEmprestimoById(Long id){
-        return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Emprestimo não encontrado."));
+        return repository.findById(id)
+                .orElseThrow(NotFoundException::new);
     }
 
     public void deletarEmprestimo(Long id) {
@@ -72,7 +78,7 @@ public class EmprestimoService {
 
     }
 
-    public Emprestimo devolverLivro(Long id, Date dataDevolucao) {
+    public Emprestimo devolverLivro(Long id, LocalDate dataDevolucao) {
 
         Emprestimo emprestimo = getEmprestimoById(id);
 
@@ -84,9 +90,7 @@ public class EmprestimoService {
             throw new IllegalStateException("O livro já foi devolvido.");
         }
 
-        if (!emprestimo.isPago()) {
-            throw new RuntimeException("O livro não pode ser devolvido.");
-        }
+        calcularMulta(emprestimo, dataDevolucao);
 
         emprestimo.setDataDevolucao(dataDevolucao);
 
@@ -96,15 +100,20 @@ public class EmprestimoService {
         return repository.save(emprestimo);
     }
 
-    public void pagarMulta(RequestPagamentoDTO pagamentoDTO) {
-        Emprestimo emprestimo = repository.findByUsuarioAndLivro(pagamentoDTO.usuarioId(), pagamentoDTO.livroId()).orElseThrow(() -> new NoSuchElementException("Este empréstimo já foi pago!"));
+    public void pagarMulta(Long id, RequestPagamentoDTO pagamentoDTO) {
+        Emprestimo emprestimo = getEmprestimoById(id);
+
+        if (emprestimo.isPago()) {
+            throw new RuntimeException("Este emprestimo já foi pago.");
+        }
 
         double multa = emprestimo.getMulta();
 
-        if (multa <= 0) { throw new RuntimeException("Empréstimo sem pendências."); }
+        if (multa <= 0) {
+            throw new RuntimeException("Empréstimo sem pendências.");
+        }
 
         emprestimo.setPago(true);
-
         repository.save(emprestimo);
     }
 
@@ -114,25 +123,16 @@ public class EmprestimoService {
         }
     }
 
-    private double calcularMulta(Emprestimo emprestimo, Date dataDevolucao) {
-        long dataPrevistaMillis = emprestimo.getDataEntregaPrevista().getTime();
-        long dataDevolucaoMillis = dataDevolucao.getTime();
+    private void calcularMulta(Emprestimo emprestimo, LocalDate dataDevolucao) {
+        double multa = 0.0;
 
-        long diferencaMillis = dataDevolucaoMillis - dataPrevistaMillis;
-
-        long diasDeAtraso = TimeUnit.DAYS.convert(diferencaMillis, TimeUnit.MILLISECONDS) + 1;
-
-        if (diasDeAtraso > 0) {
-            double multa = RATE * diasDeAtraso;
-
+        if (dataDevolucao.isAfter(emprestimo.getDataEntregaPrevista())) {
+            long diasDeAtraso = ChronoUnit.DAYS.between(emprestimo.getDataEntregaPrevista(), dataDevolucao);
+            multa = DAILY_LATE_FEE * diasDeAtraso;
             emprestimo.setMulta(multa);
-
             repository.save(emprestimo);
-
-            return multa;
         }
 
-        return 0;
     }
 
     public List<Emprestimo> getEmprestimoByUsuarioId(Long id) {
@@ -143,6 +143,3 @@ public class EmprestimoService {
         return repository.findByUsuarioId(id);
     }
 }
-
-
-

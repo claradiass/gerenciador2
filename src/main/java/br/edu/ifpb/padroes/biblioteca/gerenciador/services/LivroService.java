@@ -7,6 +7,8 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Livro;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.AutorRepository;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.GeneroRepository;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.LivroRepository;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.AlreadyExistsException;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -51,7 +53,7 @@ public class LivroService {
 
         }
 
-        throw new RuntimeException("Livro já existente.");
+        throw new AlreadyExistsException();
     }
 
     public void updateQuantidadeLivro(Long id, int quantidade){
@@ -93,7 +95,7 @@ public class LivroService {
         if(livroOptional.isPresent()){
             return livroOptional.get();
         }
-        throw new RuntimeException("Livro não encontrado");
+        throw new NotFoundException();
     }
 
     public Optional<Livro> findByIsbn(String isbn){

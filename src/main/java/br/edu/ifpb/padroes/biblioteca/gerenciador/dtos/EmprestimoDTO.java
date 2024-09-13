@@ -1,5 +1,5 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.dtos;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-public record EmprestimoDTO(Long usuarioId, Long livroId, Date dataEmprestimo, Date dataEntregaPrevista, Date dataDevolucao, double multa, boolean pago) {}
+public record EmprestimoDTO(Long usuarioId, Long livroId, LocalDate dataEmprestimo, LocalDate dataEntregaPrevista) {}

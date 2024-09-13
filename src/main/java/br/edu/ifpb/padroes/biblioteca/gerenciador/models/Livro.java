@@ -3,7 +3,7 @@ package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -20,7 +20,7 @@ public class Livro implements Serializable {
     private String sinopse;
     private int quantidade;
     @Column(name = "ano_edicao")
-    private Date dataPublicacao;
+    private LocalDate dataPublicacao;
 
     @ManyToMany
     @JoinTable(
@@ -41,7 +41,7 @@ public class Livro implements Serializable {
     public Livro() {
     }
 
-    public Livro(Long id, String titulo, String isbn, String sinopse, int quantidade, Date dataPublicacao) {
+    public Livro(Long id, String titulo, String isbn, String sinopse, int quantidade, LocalDate dataPublicacao) {
         this.id = id;
         this.titulo = titulo;
         this.isbn = isbn;
@@ -74,11 +74,11 @@ public class Livro implements Serializable {
         this.isbn = isbn;
     }
 
-    public Date getDataPublicacao() {
+    public LocalDate getDataPublicacao() {
         return dataPublicacao;
     }
 
-    public void setDataPublicacao(Date dataPublicacao) {
+    public void setDataPublicacao(LocalDate dataPublicacao) {
         this.dataPublicacao = dataPublicacao;
     }
 

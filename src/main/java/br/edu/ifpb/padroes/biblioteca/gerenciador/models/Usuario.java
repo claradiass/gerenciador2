@@ -7,9 +7,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -23,7 +22,7 @@ public class Usuario implements Serializable, UserDetails {
     @Column(name = "cpf",unique = true)
     private String cpf;
     @Column(name = "data_nascimento")
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
     private String senha;
     @Enumerated(EnumType.STRING)
     private UsuarioCargo cargo;
@@ -31,7 +30,7 @@ public class Usuario implements Serializable, UserDetails {
     public Usuario() {
     }
 
-    public Usuario(Long id, String nome, String cpf, String senha, Date dataNascimento, String endereco, UsuarioCargo cargo) {
+    public Usuario(Long id, String nome, String cpf, String senha, LocalDate dataNascimento, String endereco, UsuarioCargo cargo) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -41,7 +40,7 @@ public class Usuario implements Serializable, UserDetails {
         this.cargo = cargo;
     }
 
-    public Usuario(String nome, String cpf, String senha, Date dataNascimento, String endereco, UsuarioCargo cargo) {
+    public Usuario(String nome, String cpf, String senha, LocalDate dataNascimento, String endereco, UsuarioCargo cargo) {
         this.nome = nome;
         this.cpf = cpf;
         this.senha = senha;
@@ -91,11 +90,11 @@ public class Usuario implements Serializable, UserDetails {
         this.senha = senha;
     }
 
-    public Date getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 

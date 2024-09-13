@@ -1,8 +1,7 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.controllers;
 
-import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UsuarioDTO;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Usuario;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.services.UsuarioService;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.models.User;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/usuario")
 public class UserController {
     @Autowired
-    private UsuarioService service;
+    private UserService service;
+
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> getUsuario(@PathVariable Long id) {
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(service.getUsuarioById(id));
     }
 

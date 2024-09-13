@@ -3,12 +3,12 @@ package br.edu.ifpb.padroes.biblioteca.gerenciador.validators.emprestimo.handler
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.EmprestimoDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Livro;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.LivroService;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.BaseHandler;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LivroExiste extends BaseHandler {
+public class LivroExiste extends Handler {
     private final LivroService livroService;
 
     @Autowired
@@ -20,7 +20,9 @@ public class LivroExiste extends BaseHandler {
     public void check(EmprestimoDTO data) {
         Livro livro = livroService.getLivro(data.livroId());
 
-        checkNext(data);
+        if (getNextHandler() != null) {
+            getNextHandler().check(data);
+        }
     }
 }
 

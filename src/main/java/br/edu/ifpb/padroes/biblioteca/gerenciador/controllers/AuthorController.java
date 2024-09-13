@@ -1,8 +1,8 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.controllers;
 
-import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.RequestAuthorDTO;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Autor;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.services.AutorService;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.AuthorRequestDTO;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Author;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,20 +13,20 @@ import org.springframework.web.bind.annotation.*;
 public class AuthorController {
 
     @Autowired
-    private AutorService service;
+    private AuthorService service;
 
-    @PostMapping
-    public ResponseEntity<Autor> createNewAuthor(@RequestBody RequestAuthorDTO data) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.insertAuthor(data));
+    @PostMapping("/create")
+    public ResponseEntity<Author> createNewAuthor(@RequestBody AuthorRequestDTO authorDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.insertAuthor(authorDTO));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Autor> updateAuthor(@PathVariable("id") Long id, @RequestBody RequestAuthorDTO data) {
-        return ResponseEntity.ok(service.updateAuthor(id, data));
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Author> updateAuthor(@PathVariable("id") Long id, @RequestBody AuthorRequestDTO authorDTO) {
+        return ResponseEntity.ok(service.updateAuthor(id, authorDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Autor> getAuthors(@PathVariable("id") Long id) {
+    public ResponseEntity<Author> getAuthors(@PathVariable("id") Long id) {
         var obj = service.getAutorById(id);
         return ResponseEntity.ok(obj);
     }

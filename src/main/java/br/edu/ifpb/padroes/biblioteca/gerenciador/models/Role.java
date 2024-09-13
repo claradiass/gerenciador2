@@ -1,12 +1,12 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
-public enum UsuarioCargo {
+public enum Role {
     ADMIN("admin"),
     USER("user");
 
     private final String role;
 
-    UsuarioCargo(String role){
+    Role(String role){
         this.role = role;
     }
 
