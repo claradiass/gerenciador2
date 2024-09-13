@@ -13,21 +13,21 @@ import java.util.List;
 @Component
 public class NotPaidLoan extends Handler {
 
-    private LoanRepository loanRepository;
+    private final LoanRepository loanRepository;
 
     @Autowired
     public NotPaidLoan(LoanRepository loanRepository) {
         this.loanRepository = loanRepository;
     }
+
     @Override
     public void check(LoanRequestDTO data) {
-        List<Loan> emprestimosNotPaid = loanRepository.findNotPaidEmprestimo(data.usuarioId());
+        List<Loan> loansNotPaid = loanRepository.findNotPaidEmprestimo(data.usuarioId());
 
-        if (!emprestimosNotPaid.isEmpty()) {
+        if (!loansNotPaid.isEmpty()) {
             throw new NotPaidException();
         } else if (getNextHandler() != null) {
             getNextHandler().check(data);
         }
-
     }
 }
