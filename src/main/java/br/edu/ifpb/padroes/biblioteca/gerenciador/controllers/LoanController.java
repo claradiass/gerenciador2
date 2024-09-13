@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/emprestimo")
@@ -52,6 +54,16 @@ public class LoanController {
     public ResponseEntity<Void> payLateFee(@PathVariable("id") Long id) {
         service.payLateFee(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Loan>> getLoans() {
+        return ResponseEntity.ok(service.getAllLoans());
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Loan>> getLoansByUserId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(service.getAllLoansByUserId(id));
     }
 
 }
