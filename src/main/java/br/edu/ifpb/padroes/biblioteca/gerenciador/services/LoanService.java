@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class LoanService {
@@ -38,7 +39,7 @@ public class LoanService {
             throw new IllegalArgumentException("IDs de usuário e livro não podem ser nulos");
         }
 
-        User user = userService.getUsuarioById(loanRequestDTO.usuarioId());
+        User user = userService.getUserById(loanRequestDTO.usuarioId());
         Book book = bookService.getBook(loanRequestDTO.livroId());
 
         Handler chain = new ChainBuilder()
@@ -59,6 +60,15 @@ public class LoanService {
 
     public Loan getLoanById(Long id){
         return repository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    public List<Loan> getAllLoansByUserId(Long id){
+        getLoanById(id);
+        return repository.findByUserIdOrderByPaidAsc(id);
+    }
+
+    public List<Loan> getAllLoans(){
+        return repository.findAllByOrderByPaidAsc();
     }
 
     public void deleteLoan(Long id) {
