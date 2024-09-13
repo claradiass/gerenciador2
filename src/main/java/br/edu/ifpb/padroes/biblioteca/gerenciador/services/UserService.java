@@ -1,6 +1,5 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.services;
 
-import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UserRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.User;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.UserRepository;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundException;
@@ -8,18 +7,19 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundEx
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
     @Autowired
     private UserRepository repository;
 
-    public User getUsuarioById(Long id) {
+    public User getUserById(Long id) {
         return repository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-    public User addUsuario(UserRequestDTO userRequestDTO) {
-        User novoUsuario = new User(userRequestDTO);
-        return repository.save(novoUsuario);
+    public List<User> getAllUsers() {
+        return repository.findAll();
     }
 
 
