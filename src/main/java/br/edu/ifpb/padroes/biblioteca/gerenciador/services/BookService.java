@@ -11,6 +11,8 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.AlreadyExi
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,95 +23,69 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
     @Autowired
-    private AuthorRepository authorRepository;
+    private AuthorService authorService;
     @Autowired
-    private GenreRepository genreRepository;
+    private GenreService genreService;
 
-    public Book insertBook(BookRequestDTO bookRequestDTO){
+    public Book insertBook(BookRequestDTO bookRequestDTO) {
+        if (findByIsbn(bookRequestDTO.isbn()) != null) {throw new AlreadyExistsException();}
 
-        Optional<Book> newBook = findByIsbn(bookRequestDTO.isbn());
+        Book book = new Book();
+        mapBookDetails(bookRequestDTO, book);
 
-        if (newBook.isEmpty()){
-            Book book = new Book();
-            book.setIsbn(bookRequestDTO.isbn());
-            book.setTitle(bookRequestDTO.titulo());
-            book.setQuantity(bookRequestDTO.quantidade());
-            book.setPublicationDate(bookRequestDTO.dataPublicacao());
-            book.setSynopsis(bookRequestDTO.sinopse());
-
-            Set<Author> authors = bookRequestDTO.autores().stream()
-                    .map(this::findAutorById)
-                    .collect(Collectors.toSet());
-
-            book.setAuthors(authors);
-
-            Set<Genre> genres = bookRequestDTO.generos().stream()
-                    .map(this::findGeneroById)
-                    .collect(Collectors.toSet());
-
-            book.setGenres(genres);
-
-            return bookRepository.save(book);
-        }
-
-        throw new AlreadyExistsException();
+        return bookRepository.save(book);
     }
 
-    public void updateQuantityBook(Long id, int quantity){
-        Book book = bookRepository.findById(id).orElseThrow();
+    public void updateQuantityBook(Long id, int quantity) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
 
         book.setQuantity(quantity);
+        bookRepository.save(book);
     }
 
     public Book updateBook(Long id, BookRequestDTO bookRequestDTO) {
-        Book book = bookRepository.findById(id).orElseThrow();
+        Book book = getBook(id);
 
+        mapBookDetails(bookRequestDTO, book);
+
+        return bookRepository.save(book);
+    }
+
+    public void deleteBook(Long id) {
+        getBook(id);
+        bookRepository.deleteById(id);
+    }
+
+    public Book getBook(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+    }
+
+    public List<Book> getAllBooks() {
+        return bookRepository.findAll();
+    }
+
+    public Book findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn).orElseThrow(NotFoundException::new);
+    }
+
+    private void mapBookDetails(BookRequestDTO bookRequestDTO, Book book) {
         book.setIsbn(bookRequestDTO.isbn());
         book.setTitle(bookRequestDTO.titulo());
         book.setQuantity(bookRequestDTO.quantidade());
         book.setPublicationDate(bookRequestDTO.dataPublicacao());
         book.setSynopsis(bookRequestDTO.sinopse());
 
-        Set<Author> autores = bookRequestDTO.autores().stream()
-                .map(this::findAutorById)
+        Set<Author> authors = bookRequestDTO.autores().stream()
+                .map(authorService::getAutorById)
                 .collect(Collectors.toSet());
 
-        book.setAuthors(autores);
-
-        Set<Genre> generos = bookRequestDTO.generos().stream()
-                .map(this::findGeneroById)
+        Set<Genre> genres = bookRequestDTO.generos().stream()
+                .map(genreService::getGenreById)
                 .collect(Collectors.toSet());
 
-        book.setGenres(generos);
-
-        return bookRepository.save(book);
-    }
-
-    public void deleteBook(Long id) {
-        bookRepository.deleteById(id);
-    }
-
-    public Book getBook(Long id){
-        Optional<Book> book = bookRepository.findById(id);
-
-        if(book.isPresent()){
-            return book.get();
-        }
-
-        throw new NotFoundException();
-    }
-
-    public Optional<Book> findByIsbn(String isbn){
-        return bookRepository.findByIsbn(isbn);
-    }
-
-    private Author findAutorById(Long id) {
-        return authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Autor não encontrado com ID: " + id));
-    }
-
-    private Genre findGeneroById(Long id) {
-        return genreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Gênero não encontrado com ID: " + id));
+        book.setAuthors(authors);
+        book.setGenres(genres);
     }
 }
