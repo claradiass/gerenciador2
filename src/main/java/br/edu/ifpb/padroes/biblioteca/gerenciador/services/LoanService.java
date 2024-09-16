@@ -34,14 +34,19 @@ public class LoanService {
     private ChainBuilder loanValidatorChain;
 
     public Loan insertLoan(LoanRequestDTO loanRequestDTO) {
-
-        if (loanRequestDTO.usuarioId() == null || loanRequestDTO.livroId() == null) {
-            throw new IllegalArgumentException("IDs de usuário e livro não podem ser nulos");
-        }
-
         User user = userService.getUserById(loanRequestDTO.usuarioId());
         Book book = bookService.getBook(loanRequestDTO.livroId());
 
+        validate(loanRequestDTO);
+
+        book.setQuantity(book.getQuantity() - 1);
+        bookService.updateQuantityBook(book.getId(), book.getQuantity());
+
+        Loan loan = new Loan(loanRequestDTO, user, book);
+        return repository.save(loan);
+    }
+
+    private void validate(LoanRequestDTO loanRequestDTO) {
         Handler chain = new ChainBuilder()
                 .addHandler(new ExceededLimitLoan(repository))
                 .addHandler(new SameBookLoan(repository))
@@ -50,12 +55,6 @@ public class LoanService {
                 .build();
 
         chain.check(loanRequestDTO);
-
-        book.setQuantity(book.getQuantity() - 1);
-        bookService.updateQuantityBook(book.getId(), book.getQuantity());
-
-        Loan loan = new Loan(loanRequestDTO, user, book);
-        return repository.save(loan);
     }
 
     public Loan getLoanById(Long id){
@@ -85,7 +84,6 @@ public class LoanService {
     }
 
     public Loan refundBook(Long id, LocalDate refundDate) {
-
         Loan loan = getLoanById(id);
 
         if (refundDate == null) {

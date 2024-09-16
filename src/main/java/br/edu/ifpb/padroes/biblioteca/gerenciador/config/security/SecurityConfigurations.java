@@ -29,10 +29,10 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/usuario/all").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/usuario/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/usuario/all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,  "/usuario/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/livro/create").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/livro/update/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,  "/livro/update/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/livro/delete/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/emprestimo/create").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/emprestimo/{id}").hasRole("ADMIN")
