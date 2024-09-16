@@ -7,8 +7,6 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Book;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.User;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.LoanRepository;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.BookHasAlreadyBeenReturnedException;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.LoanAlreadyPaidException;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.LoanWithoutDebtsException;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundException;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.Handler;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.ChainBuilder;
@@ -106,11 +104,8 @@ public class LoanService {
     public void payLateFee(Long id) {
         Loan loan = getLoanById(id);
 
-        if (loan.isPaid()) {throw new LoanAlreadyPaidException();}
+        loan.hasFee();
 
-        if (loan.getFee() <= 0) {throw new LoanWithoutDebtsException();}
-
-        loan.setPaid(true);
         repository.save(loan);
     }
 

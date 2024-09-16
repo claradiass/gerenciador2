@@ -1,6 +1,8 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanRequestDTO;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.LoanAlreadyPaidException;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.LoanWithoutDebtsException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -127,6 +129,14 @@ public class Loan implements Serializable {
 
     public void setPaid(boolean paid) {
         this.paid = paid;
+    }
+
+    public void hasFee() {
+        if (this.isPaid()) {throw new LoanAlreadyPaidException();}
+
+        if (this.getFee() <= 0) {throw new LoanWithoutDebtsException();}
+
+        this.setPaid(true);
     }
 
     public void calculateLateFee() {

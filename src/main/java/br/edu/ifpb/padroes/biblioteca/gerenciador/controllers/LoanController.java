@@ -5,9 +5,11 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.RefundResquestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoanUpdateRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Loan;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.LoanService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
