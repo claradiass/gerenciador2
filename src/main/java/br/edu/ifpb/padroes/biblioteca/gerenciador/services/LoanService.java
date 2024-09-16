@@ -11,6 +11,7 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundEx
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.Handler;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.ChainBuilder;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.loan.handlers.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
