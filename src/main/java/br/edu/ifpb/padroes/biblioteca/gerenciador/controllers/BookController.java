@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/livro")
 public class BookController {
@@ -24,6 +26,11 @@ public class BookController {
     public ResponseEntity<Book> getBook(@PathVariable("id") Long id){
         var obj = service.getBook(id);
         return ResponseEntity.ok(obj);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Book>> getBooks(){
+        return ResponseEntity.ok(service.getAllBooks());
     }
 
     @PutMapping("/update/{id}")

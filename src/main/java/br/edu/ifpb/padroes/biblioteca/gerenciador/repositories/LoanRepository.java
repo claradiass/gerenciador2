@@ -47,4 +47,9 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     )
     List<Loan> findNotRefundEmprestimo(@Param("idUsuario") Long idUsuario);
 
+    List<Loan> findAllByOrderByPaidAsc();
+
+    List<Loan> findByUserIdOrderByPaidAsc(Long idUsuario);
+
+
 }

@@ -1,7 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.controllers.exceptions;
 
-import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.AlreadyExistsException;
-import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.NotFoundException;
+import br.edu.ifpb.padroes.biblioteca.gerenciador.services.exceptions.*;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.validators.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(LoanLimitException.class)
-    public ResponseEntity<StandardError> LoanLimitException(LoanLimitException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> loanLimitException(LoanLimitException e, HttpServletRequest request) {
         String error = "Loan limit exception.";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
@@ -39,7 +38,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(LoanSameBookException.class)
-    public ResponseEntity<StandardError> LoanSameBookException(LoanSameBookException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> loanSameBookException(LoanSameBookException e, HttpServletRequest request) {
         String error = "Loan same book exception.";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
@@ -47,7 +46,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(MinimumQuantityBookException.class)
-    public ResponseEntity<StandardError> MinimumQuantityBookException(MinimumQuantityBookException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> minimumQuantityBookException(MinimumQuantityBookException e, HttpServletRequest request) {
         String error = "Minimum quantity of book exception.";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
@@ -55,7 +54,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(NotPaidException.class)
-    public ResponseEntity<StandardError> NotPaidException(NotPaidException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> notPaidException(NotPaidException e, HttpServletRequest request) {
         String error = "Not paid exception.";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
@@ -63,8 +62,32 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(PendingLoanException.class)
-    public ResponseEntity<StandardError> PendingLoanException(PendingLoanException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> pendingLoanException(PendingLoanException e, HttpServletRequest request) {
         String error = "Pending loan exception.";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(BookHasAlreadyBeenReturnedException.class)
+    public ResponseEntity<StandardError> bookHasAlreadyBeenReturnedException(BookHasAlreadyBeenReturnedException e, HttpServletRequest request) {
+        String error = "book has already been returned exception.";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(LoanAlreadyPaidException.class)
+    public ResponseEntity<StandardError> loanAlreadyPaidException(LoanAlreadyPaidException e, HttpServletRequest request) {
+        String error = "loan already paid exception.";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(LoanWithoutDebtsException.class)
+    public ResponseEntity<StandardError> loanWithoutDebtsException(LoanWithoutDebtsException e, HttpServletRequest request) {
+        String error = "loan without debts exception.";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);

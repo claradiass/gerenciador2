@@ -1,6 +1,7 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.models;
 
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UserRequestDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +31,7 @@ public class User implements Serializable, UserDetails {
     private LocalDate birthDate;
 
     @Column(name = "senha")
+    @JsonIgnore
     private String password;
     @Enumerated(EnumType.STRING)
     @Column(name = "cargo")

@@ -6,15 +6,17 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "emprestimo")
 public class Loan implements Serializable {
+    private final static double DAILY_LATE_FEE = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private User user;
@@ -111,6 +113,7 @@ public class Loan implements Serializable {
     }
 
     public double getFee() {
+        calculateLateFee();
         return fee;
     }
 
@@ -124,6 +127,14 @@ public class Loan implements Serializable {
 
     public void setPaid(boolean paid) {
         this.paid = paid;
+    }
+
+    public void calculateLateFee() {
+        if (this.refundDate != null && refundDate.isAfter(this.estimatedDate)) {
+            long daysLate = ChronoUnit.DAYS.between(this.estimatedDate, this.refundDate);
+            double fee = DAILY_LATE_FEE * daysLate;
+            setFee(fee);
+        }
     }
 }
 
