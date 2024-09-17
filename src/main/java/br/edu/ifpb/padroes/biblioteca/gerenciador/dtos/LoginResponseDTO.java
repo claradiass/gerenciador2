@@ -1,3 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.dtos;
-public record LoginResponseDTO(String token) {
+
+import jakarta.validation.constraints.NotNull;
+
+public record LoginResponseDTO(@NotNull String token) {
 }

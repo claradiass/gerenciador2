@@ -6,6 +6,7 @@ import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.LoginResponseDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.UserRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.User;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.repositories.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +28,7 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody AuthenticationDTO userDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody AuthenticationDTO userDTO) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(userDTO.cpf(), userDTO.senha());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
@@ -37,7 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody UserRequestDTO userDTO) {
+    public ResponseEntity<Void> register(@Valid @RequestBody UserRequestDTO userDTO) {
         if (this.repository.findByCpf(userDTO.cpf()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.senha());

@@ -1,4 +1,6 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.dtos;
 
-public record AuthenticationDTO(String cpf, String senha) {
+import jakarta.validation.constraints.NotNull;
+
+public record AuthenticationDTO(@NotNull String cpf, @NotNull String senha) {
 }

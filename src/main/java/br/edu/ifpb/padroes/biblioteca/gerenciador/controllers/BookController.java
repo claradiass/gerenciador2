@@ -3,6 +3,7 @@ package br.edu.ifpb.padroes.biblioteca.gerenciador.controllers;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.dtos.BookRequestDTO;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.models.Book;
 import br.edu.ifpb.padroes.biblioteca.gerenciador.services.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class BookController {
     private BookService service;
 
     @PostMapping("/create")
-    public ResponseEntity<Book> createNewBook(@RequestBody BookRequestDTO bookRequestDTO) {
+    public ResponseEntity<Book> createNewBook(@Valid @RequestBody BookRequestDTO bookRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.insertBook(bookRequestDTO));
     }
 
@@ -34,7 +35,7 @@ public class BookController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable("id") Long id, @RequestBody BookRequestDTO bookRequestDTO) {
+    public ResponseEntity<Book> updateBook(@PathVariable("id") Long id, @Valid @RequestBody BookRequestDTO bookRequestDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(service.updateBook(id, bookRequestDTO));
     }
 

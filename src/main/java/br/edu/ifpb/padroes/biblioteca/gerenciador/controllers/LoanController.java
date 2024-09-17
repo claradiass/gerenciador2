@@ -35,7 +35,7 @@ public class LoanController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Loan> updateLoan(@PathVariable("id") Long id, @RequestBody LoanUpdateRequestDTO loanDTO){
+    public ResponseEntity<Loan> updateLoan(@PathVariable("id") Long id, @Valid @RequestBody LoanUpdateRequestDTO loanDTO){
         Loan updateLoan = service.updateLoan(id, loanDTO);
         return  ResponseEntity.ok(updateLoan);
     }
@@ -47,7 +47,7 @@ public class LoanController {
     }
 
     @PutMapping("/refund/{id}")
-    public ResponseEntity<Loan> refundBook(@PathVariable("id") Long id, @RequestBody RefundResquestDTO refundDTO) {
+    public ResponseEntity<Loan> refundBook(@PathVariable("id") Long id, @Valid @RequestBody RefundResquestDTO refundDTO) {
         Loan loan = service.refundBook(id, refundDTO.dataDevolucao());
         return ResponseEntity.ok(loan);
     }

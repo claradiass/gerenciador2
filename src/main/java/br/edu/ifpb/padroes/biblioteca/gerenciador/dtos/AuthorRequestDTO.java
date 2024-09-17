@@ -1,5 +1,7 @@
 package br.edu.ifpb.padroes.biblioteca.gerenciador.dtos;
 
-public record AuthorRequestDTO(String nome) {
+import jakarta.validation.constraints.NotNull;
+
+public record AuthorRequestDTO(@NotNull String nome) {
 
 }
